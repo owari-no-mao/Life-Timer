@@ -1,0 +1,6 @@
+{
+  "name": "Life Timer",
+  "description": "人生の時間を可視化し、今この瞬間のかけがえのない価値を実感するためのタイマー＆ライフグリッドアプリ",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

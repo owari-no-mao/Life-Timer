@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Outfit', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+}
+
+.font-mono-numbers {
+  font-family: 'JetBrains Mono', monospace;
+  font-feature-settings: "tnum" 1;
+}
+
+.font-display {
+  font-family: 'Cinzel', serif;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(23, 23, 23, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(115, 115, 115, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(163, 163, 163, 0.6);
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.4), inset 0 0 6px rgba(245, 158, 11, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.8), inset 0 0 10px rgba(245, 158, 11, 0.9);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
+
