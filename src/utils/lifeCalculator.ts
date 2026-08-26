@@ -116,6 +116,40 @@ export function calculateDetailedRemaining(targetDate: Date, now: Date = new Dat
   return { years, months, days, hours, minutes, seconds, formattedString };
 }
 
+export function convertSecondsToTimeBreakdown(totalSeconds: number): DetailedTimeBreakdown {
+  if (totalSeconds <= 0) {
+    return { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0, formattedString: '0年 0ヶ月 0日 0時間 0分 0秒' };
+  }
+
+  const secondsPerYear = 365.2425 * 86400; // ~31,556,952 sec
+  const secondsPerMonth = (365.2425 / 12) * 86400; // ~2,629,746 sec
+  const secondsPerDay = 86400;
+  const secondsPerHour = 3600;
+  const secondsPerMinute = 60;
+
+  let remaining = totalSeconds;
+
+  const years = Math.floor(remaining / secondsPerYear);
+  remaining -= years * secondsPerYear;
+
+  const months = Math.floor(remaining / secondsPerMonth);
+  remaining -= months * secondsPerMonth;
+
+  const days = Math.floor(remaining / secondsPerDay);
+  remaining -= days * secondsPerDay;
+
+  const hours = Math.floor(remaining / secondsPerHour);
+  remaining -= hours * secondsPerHour;
+
+  const minutes = Math.floor(remaining / secondsPerMinute);
+  remaining -= minutes * secondsPerMinute;
+
+  const seconds = Math.floor(remaining);
+
+  const formattedString = `${years}年 ${months}ヶ月 ${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
+  return { years, months, days, hours, minutes, seconds, formattedString };
+}
+
 export function calculateLifeMetrics(profile: UserProfile, now: Date = new Date()): LifeCalculations {
   const birthDateTimeStr = `${profile.birthDate}T${profile.birthTime || '12:00'}:00`;
   const birthDate = new Date(birthDateTimeStr);

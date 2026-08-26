@@ -4,6 +4,7 @@ import {
   calculateLifeMetrics, 
   calculateDetailedAge, 
   calculateDetailedRemaining,
+  convertSecondsToTimeBreakdown,
   formatLargeNumber, 
   getLifeEraForAge 
 } from '../utils/lifeCalculator';
@@ -38,6 +39,8 @@ export const HeroTicker: React.FC<HeroTickerProps> = ({ profile, onNavigateToTab
   const metrics: LifeCalculations = calculateLifeMetrics(profile, now);
   const detailedAge = calculateDetailedAge(validBirthDate, now);
   const detailedRemaining = calculateDetailedRemaining(targetEndDate, now);
+  const detailedWakingRemaining = convertSecondsToTimeBreakdown(metrics.wakingHoursRemaining * 3600);
+  const activeRemainingBreakdown = showWakingOnly ? detailedWakingRemaining : detailedRemaining;
   const currentEra = getLifeEraForAge(metrics.exactAgeYears);
 
   // Format remaining time display based on unit
@@ -214,32 +217,41 @@ export const HeroTicker: React.FC<HeroTickerProps> = ({ profile, onNavigateToTab
           {selectedUnit === 'detailed' ? (
             /* Detailed breakdown format for remaining time */
             <div>
-              <div className="text-xs text-neutral-400 mb-3">
-                残り年・月・日・時間・分・秒のカウントダウン:
+              <div className="flex items-center justify-between text-xs text-neutral-400 mb-3 flex-wrap gap-1">
+                <span>
+                  {showWakingOnly
+                    ? `残り覚醒時間（睡眠 ${profile.sleepHoursPerDay || 7.5}h/日 を除外した実質時間）:`
+                    : '残り年・月・日・時間・分・秒のカウントダウン:'}
+                </span>
+                {showWakingOnly && (
+                  <span className="text-amber-400 font-semibold bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">
+                    睡眠時間控除中
+                  </span>
+                )}
               </div>
               <div className="flex flex-wrap items-baseline gap-2 sm:gap-4 text-neutral-100 font-mono-numbers">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-amber-300">{detailedRemaining.years}</span>
+                  <span className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-amber-300">{activeRemainingBreakdown.years}</span>
                   <span className="text-sm sm:text-base text-neutral-400 font-sans">年</span>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-amber-300">{detailedRemaining.months}</span>
+                  <span className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-amber-300">{activeRemainingBreakdown.months}</span>
                   <span className="text-sm sm:text-base text-neutral-400 font-sans">ヶ月</span>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-amber-300">{detailedRemaining.days}</span>
+                  <span className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-amber-300">{activeRemainingBreakdown.days}</span>
                   <span className="text-sm sm:text-base text-neutral-400 font-sans">日</span>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-amber-300">{String(detailedRemaining.hours).padStart(2, '0')}</span>
+                  <span className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-amber-300">{String(activeRemainingBreakdown.hours).padStart(2, '0')}</span>
                   <span className="text-sm sm:text-base text-neutral-400 font-sans">時間</span>
                 </div>
                 <div className="flex items-baseline gap-1 text-neutral-300">
-                  <span className="text-2xl sm:text-4xl font-bold text-neutral-200">{String(detailedRemaining.minutes).padStart(2, '0')}</span>
+                  <span className="text-2xl sm:text-4xl font-bold text-neutral-200">{String(activeRemainingBreakdown.minutes).padStart(2, '0')}</span>
                   <span className="text-xs text-neutral-400 font-sans">分</span>
                 </div>
                 <div className="flex items-baseline gap-1 text-neutral-400">
-                  <span className="text-2xl sm:text-4xl font-bold text-neutral-300">{String(detailedRemaining.seconds).padStart(2, '0')}</span>
+                  <span className="text-2xl sm:text-4xl font-bold text-neutral-300">{String(activeRemainingBreakdown.seconds).padStart(2, '0')}</span>
                   <span className="text-xs text-neutral-500 font-sans">秒</span>
                 </div>
               </div>
