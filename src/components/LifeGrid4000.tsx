@@ -9,7 +9,7 @@ interface LifeGrid4000Props {
 
 type ViewFilter = 'all' | 'eras' | 'seasons';
 
-export const LifeGrid4000: React.FC<LifeGrid4000Props> = ({ profile }) => {
+export const LifeGrid4000: React.FC<LifeGrid4000Props> = React.memo(({ profile }) => {
   const [hoveredWeek, setHoveredWeek] = useState<{ age: number; week: number; isPast: boolean; isCurrent: boolean } | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<ViewFilter>('all');
   const [activeEraFilter, setActiveEraFilter] = useState<string | null>(null);
@@ -259,4 +259,4 @@ export const LifeGrid4000: React.FC<LifeGrid4000Props> = ({ profile }) => {
       </div>
     </div>
   );
-};
+});

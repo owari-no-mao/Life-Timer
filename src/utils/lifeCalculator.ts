@@ -30,6 +30,92 @@ export function getLifeEraForAge(age: number) {
   return LIFE_ERAS.find(era => age >= era.startAge && age < era.endAge) || LIFE_ERAS[LIFE_ERAS.length - 1];
 }
 
+export interface DetailedTimeBreakdown {
+  years: number;
+  months: number;
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  formattedString: string;
+}
+
+export function calculateDetailedAge(birthDateTime: Date, now: Date = new Date()): DetailedTimeBreakdown {
+  if (birthDateTime > now) {
+    return { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0, formattedString: '0年 0ヶ月 0日 0時間 0分 0秒' };
+  }
+
+  let years = now.getFullYear() - birthDateTime.getFullYear();
+  let months = now.getMonth() - birthDateTime.getMonth();
+  let days = now.getDate() - birthDateTime.getDate();
+  let hours = now.getHours() - birthDateTime.getHours();
+  let minutes = now.getMinutes() - birthDateTime.getMinutes();
+  let seconds = now.getSeconds() - birthDateTime.getSeconds();
+
+  if (seconds < 0) {
+    seconds += 60;
+    minutes--;
+  }
+  if (minutes < 0) {
+    minutes += 60;
+    hours--;
+  }
+  if (hours < 0) {
+    hours += 24;
+    days--;
+  }
+  if (days < 0) {
+    const prevMonthLastDay = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    days += prevMonthLastDay;
+    months--;
+  }
+  if (months < 0) {
+    months += 12;
+    years--;
+  }
+
+  const formattedString = `${years}年 ${months}ヶ月 ${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
+  return { years, months, days, hours, minutes, seconds, formattedString };
+}
+
+export function calculateDetailedRemaining(targetDate: Date, now: Date = new Date()): DetailedTimeBreakdown {
+  if (now >= targetDate) {
+    return { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0, formattedString: '0年 0ヶ月 0日 0時間 0分 0秒' };
+  }
+
+  let years = targetDate.getFullYear() - now.getFullYear();
+  let months = targetDate.getMonth() - now.getMonth();
+  let days = targetDate.getDate() - now.getDate();
+  let hours = targetDate.getHours() - now.getHours();
+  let minutes = targetDate.getMinutes() - now.getMinutes();
+  let seconds = targetDate.getSeconds() - now.getSeconds();
+
+  if (seconds < 0) {
+    seconds += 60;
+    minutes--;
+  }
+  if (minutes < 0) {
+    minutes += 60;
+    hours--;
+  }
+  if (hours < 0) {
+    hours += 24;
+    days--;
+  }
+  if (days < 0) {
+    const prevMonthLastDay = new Date(targetDate.getFullYear(), targetDate.getMonth(), 0).getDate();
+    days += prevMonthLastDay;
+    months--;
+  }
+  if (months < 0) {
+    months += 12;
+    years--;
+  }
+
+  const formattedString = `${years}年 ${months}ヶ月 ${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
+  return { years, months, days, hours, minutes, seconds, formattedString };
+}
+
 export function calculateLifeMetrics(profile: UserProfile, now: Date = new Date()): LifeCalculations {
   const birthDateTimeStr = `${profile.birthDate}T${profile.birthTime || '12:00'}:00`;
   const birthDate = new Date(birthDateTimeStr);

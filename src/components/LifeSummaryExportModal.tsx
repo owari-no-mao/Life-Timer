@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { UserProfile, LifeCalculations } from '../types';
-import { calculateLifeMetrics, formatLargeNumber, getLifeEraForAge } from '../utils/lifeCalculator';
+import { calculateLifeMetrics, calculateDetailedAge, calculateDetailedRemaining, formatLargeNumber, getLifeEraForAge } from '../utils/lifeCalculator';
 import { X, Copy, Check, Heart, Sun, Calendar, Clock, Share2 } from 'lucide-react';
 
 interface LifeSummaryExportModalProps {
@@ -15,7 +15,16 @@ export const LifeSummaryExportModal: React.FC<LifeSummaryExportModalProps> = ({
   profile,
 }) => {
   const [copied, setCopied] = useState(false);
-  const metrics: LifeCalculations = calculateLifeMetrics(profile, new Date());
+  const now = new Date();
+  const birthDate = new Date(`${profile.birthDate}T${profile.birthTime || '12:00'}:00`);
+  const validBirthDate = isNaN(birthDate.getTime()) ? new Date('2001-10-14T12:00:00') : birthDate;
+  
+  const targetEndDate = new Date(validBirthDate.getTime());
+  targetEndDate.setFullYear(validBirthDate.getFullYear() + (profile.targetAge || 85));
+
+  const metrics: LifeCalculations = calculateLifeMetrics(profile, now);
+  const detailedAge = calculateDetailedAge(validBirthDate, now);
+  const detailedRemaining = calculateDetailedRemaining(targetEndDate, now);
   const era = getLifeEraForAge(metrics.exactAgeYears);
 
   if (!isOpen) return null;
@@ -23,7 +32,8 @@ export const LifeSummaryExportModal: React.FC<LifeSummaryExportModalProps> = ({
   const summaryText = `⏳ 【私の人生の時間 - Life Timer】
 👤 ${profile.name} の生きた時間
 ・生年月日: ${profile.birthDate} ${profile.birthTime || '12:00'}
-・現在の年齢: ${metrics.exactAgeYears.toFixed(4)} 歳 (${era.name})
+・生きてきた時間 (年齢): ${detailedAge.formattedString} (${metrics.exactAgeYears.toFixed(2)}歳 / ${era.name})
+・残された時間: 約 ${detailedRemaining.formattedString}
 ・生きた日数: ${formatLargeNumber(Math.floor(metrics.daysLived))} 日 (${metrics.percentageLived.toFixed(1)}% 経過)
 ・残された日数: 約 ${formatLargeNumber(Math.floor(metrics.daysRemaining))} 日
 ・残された覚醒時間: 約 ${formatLargeNumber(Math.floor(metrics.wakingHoursRemaining))} 時間
