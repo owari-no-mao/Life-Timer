@@ -69,4 +69,4 @@ export interface LifeCalculations {
   booksRemainingToRead: number;
 }
 
-export type ActiveTab = 'dashboard' | 'grid4000' | 'perspectives';
+export type ActiveTab = 'dashboard' | 'perspectives';

@@ -119,21 +119,21 @@ export const Header: React.FC<HeaderProps> = ({ profile, onOpenSettings, onOpenS
           <button
             id="btn-share-summary"
             onClick={onOpenSummary}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-amber-400 border border-neutral-700 hover:border-neutral-600 text-xs font-semibold transition-colors"
-            title="人生サマリーカードを生成"
+            aria-label="人生サマリーカードを共有"
+            className="p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-amber-400 border border-neutral-700 hover:border-neutral-600 transition-colors"
+            title="人生サマリーを共有・コピー"
           >
-            <Share2 className="w-3.5 h-3.5" />
-            <span>共有</span>
+            <Share2 className="w-4 h-4" />
           </button>
 
           <button
             id="btn-open-settings"
             onClick={onOpenSettings}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-800 text-xs font-medium transition-colors"
+            aria-label="生年月日・寿命設定"
+            className="p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-neutral-100 border border-neutral-800 hover:border-neutral-700 transition-colors"
             title="生年月日・寿命設定"
           >
-            <Settings className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">設定</span>
+            <Settings className="w-4 h-4" />
           </button>
         </div>
 

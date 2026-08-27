@@ -92,7 +92,7 @@ export const HeroTicker: React.FC<HeroTickerProps> = ({ profile, onNavigateToTab
           main: formatLargeNumber(Math.floor(wks)),
           sub: `.${(wks % 1).toFixed(2).slice(2)}`,
           unit: '週間',
-          label: '残された週の数（人生の4,000週）',
+          label: '残された週の数',
         };
       }
     }
@@ -284,7 +284,7 @@ export const HeroTicker: React.FC<HeroTickerProps> = ({ profile, onNavigateToTab
               { id: 'hours' as const, label: '時間 (h)' },
               { id: 'minutes' as const, label: '分数 (min)' },
               { id: 'seconds' as const, label: '秒数 (sec)' },
-              { id: 'weeks' as const, label: '週数 (4000週)' },
+              { id: 'weeks' as const, label: '週数 (週)' },
             ].map((unit) => (
               <button
                 key={unit.id}
