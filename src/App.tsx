@@ -5,7 +5,8 @@ import { Header } from './components/Header';
 import { HeroTicker } from './components/HeroTicker';
 import { SettingsModal } from './components/SettingsModal';
 import { LifeSummaryExportModal } from './components/LifeSummaryExportModal';
-import { Sparkles } from 'lucide-react';
+import { soundManager } from './utils/audio';
+import { Sparkles, Settings, Volume2, VolumeX } from 'lucide-react';
 
 const STORAGE_KEYS = {
   PROFILE: 'life_timer_profile_v2',
@@ -31,6 +32,15 @@ export default function App() {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
+  const [isMuted, setIsMuted] = useState<boolean>(soundManager.isMuted);
+
+  const toggleSound = () => {
+    soundManager.isMuted = !soundManager.isMuted;
+    setIsMuted(soundManager.isMuted);
+    if (!soundManager.isMuted) {
+      soundManager.playBell(440);
+    }
+  };
 
   // Sync to localStorage
   useEffect(() => {
@@ -88,7 +98,6 @@ export default function App() {
       {/* App Header */}
       <Header
         profile={profile}
-        onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenSummary={() => setIsSummaryOpen(true)}
       />
 
@@ -97,16 +106,43 @@ export default function App() {
         <HeroTicker profile={profile} />
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-neutral-900 bg-neutral-950 py-5 px-4 text-center text-xs text-neutral-500">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="flex items-center gap-1.5">
+      {/* Footer with Settings & Volume Control */}
+      <footer className="border-t border-neutral-900 bg-neutral-950 py-4 px-4 sm:px-6 text-xs text-neutral-500">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          
+          <div className="flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-amber-400" />
             <span>ブラウザ内に安全に保存されています</span>
-          </p>
-          <p>
+          </div>
+
+          <p className="hidden md:block text-neutral-500 italic">
             Memento Mori — 今この瞬間を、大切に生きる。
           </p>
+
+          {/* Action Buttons: Sound toggle & Settings */}
+          <div className="flex items-center gap-2">
+            <button
+              id="btn-sound-toggle-footer"
+              onClick={toggleSound}
+              aria-label={isMuted ? '音声をオンにする' : '音声をミュートする'}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-neutral-200 border border-neutral-800 transition-colors text-xs cursor-pointer"
+              title={isMuted ? '音声: オフ' : '音声: オン'}
+            >
+              {isMuted ? <VolumeX className="w-3.5 h-3.5 text-neutral-500" /> : <Volume2 className="w-3.5 h-3.5 text-amber-400" />}
+              <span>{isMuted ? '音量: OFF' : '音量: ON'}</span>
+            </button>
+
+            <button
+              id="btn-open-settings-footer"
+              onClick={() => setIsSettingsOpen(true)}
+              aria-label="生年月日・寿命設定"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-amber-300 border border-neutral-800 transition-colors text-xs font-medium cursor-pointer"
+            >
+              <Settings className="w-3.5 h-3.5" />
+              <span>設定</span>
+            </button>
+          </div>
+
         </div>
       </footer>
 
