@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { UserProfile, LifeCalculations } from '../types';
 import { calculateLifeMetrics, calculateDetailedAge, calculateDetailedRemaining, formatLargeNumber, getLifeEraForAge } from '../utils/lifeCalculator';
-import { X, Copy, Check, Heart, Sun, Calendar, Clock, Share2 } from 'lucide-react';
+import { X, Copy, Check, Clock, Share2, Hourglass } from 'lucide-react';
 
 interface LifeSummaryExportModalProps {
   isOpen: boolean;
@@ -31,15 +31,12 @@ export const LifeSummaryExportModal: React.FC<LifeSummaryExportModalProps> = ({
 
   const summaryText = `⏳ 【私の人生の時間 - Life Timer】
 👤 ${profile.name} の生きた時間
-・生年月日: ${profile.birthDate} ${profile.birthTime || '12:00'}
-・生きてきた時間 (年齢): ${detailedAge.formattedString} (${metrics.exactAgeYears.toFixed(2)}歳 / ${era.name})
+・生年月日: ${profile.birthDate} ${profile.birthTime || '12:00'} (目標寿命: ${profile.targetAge}歳)
+・生きてきた時間 (年齢): ${detailedAge.formattedString} (${era.name})
 ・残された時間: 約 ${detailedRemaining.formattedString}
-・生きた日数: ${formatLargeNumber(Math.floor(metrics.daysLived))} 日 (${metrics.percentageLived.toFixed(1)}% 経過)
-・残された日数: 約 ${formatLargeNumber(Math.floor(metrics.daysRemaining))} 日
+・生きた日数: ${formatLargeNumber(Math.floor(metrics.daysLived))} 日 (進行度: ${metrics.percentageLived.toFixed(1)}%)
+・残された総日数: 約 ${formatLargeNumber(Math.floor(metrics.daysRemaining))} 日
 ・残された覚醒時間: 約 ${formatLargeNumber(Math.floor(metrics.wakingHoursRemaining))} 時間
-・残された週末: 約 ${formatLargeNumber(metrics.weekendsRemaining)} 回
-・残された夏: 約 ${formatLargeNumber(metrics.summersRemaining)} 回
-・親/大切な人と直接会える回数: 約 ${formatLargeNumber(metrics.parentVisitsRemaining)} 回
 
 「明日のために今日を生きるのではない。今日のこの一瞬こそが生きることのすべてである。」
 #LifeTimer #人生タイマー #MementoMori`;
@@ -62,7 +59,7 @@ export const LifeSummaryExportModal: React.FC<LifeSummaryExportModalProps> = ({
         <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
           <div className="flex items-center gap-2">
             <Share2 className="w-4 h-4 text-amber-400" />
-            <h3 className="text-base font-bold font-display">LIFE TIMER SUMMARY</h3>
+            <h3 className="text-base font-bold font-display">人生サマリー</h3>
           </div>
           <button
             onClick={onClose}
@@ -85,11 +82,10 @@ export const LifeSummaryExportModal: React.FC<LifeSummaryExportModalProps> = ({
             <div className="text-xs text-amber-400 font-semibold mb-1">
               {profile.name} の命の現在地
             </div>
-            <div className="font-mono-numbers text-4xl sm:text-5xl font-extrabold text-neutral-100 tracking-tight">
-              {metrics.exactAgeYears.toFixed(3)}
-              <span className="text-xl text-neutral-400 ml-1">歳</span>
+            <div className="font-mono-numbers text-2xl sm:text-3xl font-extrabold text-neutral-100 tracking-tight">
+              {detailedAge.formattedString}
             </div>
-            <div className="text-xs text-neutral-400 mt-1">
+            <div className="text-xs text-neutral-400 mt-2">
               ステージ: <span className="text-amber-300 font-semibold">{era.name}</span> (目標寿命 {profile.targetAge}歳)
             </div>
           </div>
@@ -104,49 +100,29 @@ export const LifeSummaryExportModal: React.FC<LifeSummaryExportModalProps> = ({
             </div>
             <div className="flex justify-between text-[10px] font-mono-numbers text-neutral-400">
               <span>経過: {metrics.percentageLived.toFixed(1)}%</span>
-              <span className="text-emerald-400">未来: {metrics.percentageRemaining.toFixed(1)}%</span>
+              <span className="text-emerald-400">残り: {metrics.percentageRemaining.toFixed(1)}%</span>
             </div>
           </div>
 
-          {/* 4 Stat Matrix */}
+          {/* Stat Matrix */}
           <div className="grid grid-cols-2 gap-2 text-left pt-2">
             <div className="p-3 rounded-xl bg-neutral-900 border border-neutral-800">
               <div className="flex items-center gap-1 text-[10px] text-neutral-400 mb-0.5">
-                <Clock className="w-3 h-3 text-amber-400" />
+                <Hourglass className="w-3 h-3 text-amber-400" />
+                <span>残された総日数</span>
+              </div>
+              <div className="text-base font-bold font-mono-numbers text-amber-300">
+                約 {formatLargeNumber(Math.floor(metrics.daysRemaining))} <span className="text-xs font-normal">日</span>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-neutral-900 border border-neutral-800">
+              <div className="flex items-center gap-1 text-[10px] text-neutral-400 mb-0.5">
+                <Clock className="w-3 h-3 text-emerald-400" />
                 <span>残された覚醒時間</span>
               </div>
-              <div className="text-lg font-bold font-mono-numbers text-amber-300">
-                {formatLargeNumber(Math.floor(metrics.wakingHoursRemaining))} <span className="text-xs font-normal">時間</span>
-              </div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-neutral-900 border border-neutral-800">
-              <div className="flex items-center gap-1 text-[10px] text-neutral-400 mb-0.5">
-                <Calendar className="w-3 h-3 text-indigo-400" />
-                <span>残された週末</span>
-              </div>
-              <div className="text-lg font-bold font-mono-numbers text-indigo-300">
-                {formatLargeNumber(metrics.weekendsRemaining)} <span className="text-xs font-normal">回</span>
-              </div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-neutral-900 border border-neutral-800">
-              <div className="flex items-center gap-1 text-[10px] text-neutral-400 mb-0.5">
-                <Sun className="w-3 h-3 text-amber-400" />
-                <span>残された夏</span>
-              </div>
-              <div className="text-lg font-bold font-mono-numbers text-amber-300">
-                {formatLargeNumber(metrics.summersRemaining)} <span className="text-xs font-normal">回</span>
-              </div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-neutral-900 border border-neutral-800">
-              <div className="flex items-center gap-1 text-[10px] text-neutral-400 mb-0.5">
-                <Heart className="w-3 h-3 text-rose-400" />
-                <span>親と会える回数</span>
-              </div>
-              <div className="text-lg font-bold font-mono-numbers text-rose-300">
-                {formatLargeNumber(metrics.parentVisitsRemaining)} <span className="text-xs font-normal">回</span>
+              <div className="text-base font-bold font-mono-numbers text-emerald-400">
+                約 {formatLargeNumber(Math.floor(metrics.wakingHoursRemaining))} <span className="text-xs font-normal">時間</span>
               </div>
             </div>
           </div>
